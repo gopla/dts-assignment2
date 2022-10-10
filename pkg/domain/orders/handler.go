@@ -7,5 +7,5 @@ type OrderHandler interface {
   ShowOrder(ctx *gin.Context)
   CreateOrder(ctx *gin.Context)
   UpdateOrder(ctx *gin.Context)
-  // DeleteOrder(ctx *gin.Context)
+  DeleteOrder(ctx *gin.Context)
 }

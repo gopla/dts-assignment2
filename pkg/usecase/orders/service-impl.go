@@ -65,3 +65,13 @@ func (o *OrderUsecaseImpl) ShowOrderSvc(ctx context.Context, id int) (result ord
 
   return result, err
 }
+
+func (o *OrderUsecaseImpl) DeleteOrderSvc(ctx context.Context, id int) (result orders.Order, err error) {
+  err = o.orderRepo.DeleteOrder(ctx, id)
+
+  if err != nil {
+    return result, err
+  }
+
+  return result, err
+}

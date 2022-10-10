@@ -23,6 +23,7 @@ func (o *OrderHdlImpl) GetOrder(ctx *gin.Context) {
     ctx.JSON(http.StatusBadGateway, gin.H{
       "Error": err.Error(),
     })
+    return
   }
 
   ctx.JSON(http.StatusOK, gin.H{
@@ -105,9 +106,34 @@ func (o *OrderHdlImpl) ShowOrder(ctx *gin.Context) {
     ctx.JSON(http.StatusBadGateway, gin.H{
       "Error": err.Error(),
     })
+    return
   }
 
   ctx.JSON(http.StatusOK, gin.H{
     "Data": result,
+  })
+}
+
+// Delete Order
+func (o *OrderHdlImpl) DeleteOrder(ctx *gin.Context) {
+  id, err := strconv.Atoi(ctx.Param("id"))
+
+  if err != nil {
+    ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+      "Error": err,
+    })
+    return
+  }
+
+  _, err = o.orderUsecase.DeleteOrderSvc(ctx, id)
+  if err != nil {
+    ctx.JSON(http.StatusBadGateway, gin.H{
+      "Error": err.Error(),
+    })
+    return
+  }
+
+  ctx.JSON(http.StatusOK, gin.H{
+    "Data": "Data deleted",
   })
 }

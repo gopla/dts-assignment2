@@ -2,6 +2,7 @@ package orders
 
 import (
   "context"
+  "errors"
   "log"
 
   "github.com/gopla/assignment-2/config/postgres"
@@ -22,7 +23,7 @@ func (o *OrderRepoImpl) GetOrder(ctx context.Context) (result []orders.Order, er
   db.Model(&orders.Order{}).Preload("Items").Find(&result)
 
   if err = db.Error; err != nil {
-    log.Printf("error")
+    return
   }
 
   return result, err
@@ -64,8 +65,24 @@ func (o *OrderRepoImpl) ShowOrder(ctx context.Context, inputOrder *orders.Order,
   db.Preload("Items").First(&result, id)
 
   if err = db.Error; err != nil {
-    log.Printf("error")
+    return
   }
 
   return result, err
+}
+
+func (o *OrderRepoImpl) DeleteOrder(ctx context.Context, id int) (err error) {
+  db := o.pgCln.GetClient()
+
+  result := db.Delete(&orders.Order{}, id)
+
+  if result.RowsAffected < 1 {
+    return errors.New("record not found")
+  }
+
+  if result.Error != nil {
+    return err
+  }
+
+  return err
 }
