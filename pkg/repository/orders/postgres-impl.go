@@ -33,15 +33,39 @@ func (o *OrderRepoImpl) CreateOrder(ctx context.Context, inputOrder *orders.Orde
 
   db.Model(&orders.Order{}).Create(&inputOrder)
 
-  // for _, v := range inputOrder.Items {
-  //   itemData := db.Model(&items.Item{}).Create(&v)
-  //   db.Model(&orders.Order{}).Association("Items").Append(itemData)
-  // }
-  // err =
-
   if err = db.Error; err != nil {
     log.Println("Error when creating new order")
   }
 
   return err
+}
+
+func (o *OrderRepoImpl) UpdateOrder(ctx context.Context, inputOrder *orders.Order, oldData *orders.Order) (err error) {
+  db := o.pgCln.GetClient()
+
+  inputOrder.OrderID = oldData.OrderID
+
+  db.Model(oldData).Updates(inputOrder)
+
+  for _, v := range inputOrder.Items {
+    db.Model(v).Updates(v)
+  }
+
+  if db.Error != nil {
+    return db.Error
+  }
+
+  return err
+}
+
+func (o *OrderRepoImpl) ShowOrder(ctx context.Context, inputOrder *orders.Order, id int) (result orders.Order, err error) {
+  db := o.pgCln.GetClient()
+
+  db.Preload("Items").First(&result, id)
+
+  if err = db.Error; err != nil {
+    log.Printf("error")
+  }
+
+  return result, err
 }

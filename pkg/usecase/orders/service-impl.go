@@ -36,3 +36,32 @@ func (o *OrderUsecaseImpl) CreateOrderSvc(ctx context.Context, input orders.Orde
 
   return input, err
 }
+
+func (o *OrderUsecaseImpl) UpdateOrderSvc(ctx context.Context, input orders.Order, id int) (result orders.Order, err error) {
+  result, err = o.orderRepo.ShowOrder(ctx, &orders.Order{}, id)
+
+  if err != nil {
+    log.Println("error when fetching data from database: " + err.Error())
+    err = errors.New("INTERNAL_SERVER_ERROR")
+    return result, err
+  }
+
+  if err = o.orderRepo.UpdateOrder(ctx, &input, &result); err != nil {
+    log.Println("error while updating old order")
+    err = errors.New("ERROR")
+  }
+
+  return input, err
+}
+
+func (o *OrderUsecaseImpl) ShowOrderSvc(ctx context.Context, id int) (result orders.Order, err error) {
+  result, err = o.orderRepo.ShowOrder(ctx, &orders.Order{}, id)
+
+  if err != nil {
+    log.Println("error when fetching data from database: " + err.Error())
+    err = errors.New("INTERNAL_SERVER_ERROR")
+    return result, err
+  }
+
+  return result, err
+}

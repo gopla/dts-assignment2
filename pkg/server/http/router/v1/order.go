@@ -26,7 +26,17 @@ func (o *OrderRouterImpl) post() {
   o.routerGroup.POST("", o.orderHandler.CreateOrder)
 }
 
+func (o *OrderRouterImpl) put() {
+  o.routerGroup.PUT("/:id", o.orderHandler.UpdateOrder)
+}
+
+func (o *OrderRouterImpl) show() {
+  o.routerGroup.GET("/:id", o.orderHandler.ShowOrder)
+}
+
 func (o *OrderRouterImpl) Routers() {
   o.get()
   o.post()
+  o.put()
+  o.show()
 }
