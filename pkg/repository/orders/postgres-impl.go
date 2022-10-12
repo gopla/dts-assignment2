@@ -1,12 +1,12 @@
 package orders
 
 import (
-  "context"
-  "errors"
-  "log"
+	"context"
+	"errors"
+	"log"
 
-  "github.com/gopla/assignment-2/config/postgres"
-  "github.com/gopla/assignment-2/pkg/domain/orders"
+	"github.com/gopla/assignment-2/config/postgres"
+	"github.com/gopla/assignment-2/pkg/domain/orders"
 )
 
 type OrderRepoImpl struct {
@@ -43,9 +43,6 @@ func (o *OrderRepoImpl) CreateOrder(ctx context.Context, inputOrder *orders.Orde
 
 func (o *OrderRepoImpl) UpdateOrder(ctx context.Context, inputOrder *orders.Order, oldData *orders.Order) (err error) {
   db := o.pgCln.GetClient()
-
-  inputOrder.OrderID = oldData.OrderID
-
   db.Model(oldData).Updates(inputOrder)
 
   for _, v := range inputOrder.Items {
